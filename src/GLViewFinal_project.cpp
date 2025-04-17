@@ -337,7 +337,7 @@ void Aftr::GLViewFinal_project::loadMap()
 
    std::string shinyRedPlasticCube( ManagerEnvironmentConfiguration::getSMM() + "/models/cube4x4x4redShinyPlastic_pp.wrl" );
    std::string wheeledCar( ManagerEnvironmentConfiguration::getSMM() + "/models/rcx_treads.wrl" );
-   std::string grass( ManagerEnvironmentConfiguration::getSMM() + "/models/grassFloor400x400_pp.wrl" );
+   std::string grass( ManagerEnvironmentConfiguration::getLMM() + "/models/Moon_Plane/scene.gltf" );
    std::string human( ManagerEnvironmentConfiguration::getSMM() + "/models/human_chest.wrl" );
    
    //SkyBox Textures readily available
@@ -413,6 +413,8 @@ void Aftr::GLViewFinal_project::loadMap()
          } );
       wo->setLabel( "Grass" );
       worldLst->push_back( wo );
+
+      
    }
 
    {
