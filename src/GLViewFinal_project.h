@@ -13,6 +13,7 @@
 #include "PxPhysicsAPI.h"
 #include <chrono>
 #include "WOPhysx.h"
+#include "TerrainGen.h"
 
  
 
@@ -117,7 +118,7 @@ protected:
    std::chrono::duration<float> elapsed_seconds = std::chrono::milliseconds(0);
    
 
-   
+   TerrainGen* grid = nullptr;
 
    
   

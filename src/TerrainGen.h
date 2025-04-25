@@ -3,6 +3,8 @@
 #include "VectorFwd.h"
 #include "WO.h"
 #include "PxPhysicsAPI.h"
+#include "GLView.h"
+#include "WOPhysXTriangularMesh.h"
 
 using namespace physx;
 
@@ -53,7 +55,7 @@ namespace Aftr
 
 		 TerrainGen();
 
-		 void createGrid();
+		 void createGrid(PxPhysics* p, PxScene* scene, Vector scale, std::string path);
 
 	protected:
 
@@ -66,28 +68,37 @@ namespace Aftr
 		float vert = 0;
 		float horz = 0;
 
-		VectorD offset;
+		Vector offset;
 		
-		VectorD centerOfWorld;
-		VectorD gravityDirection;
+		Vector centerOfWorld;
+		Vector gravityDirection;
 
 		Vector scale = Vector(1.0f, 1.0f, 1.0f);
-		VectorD upperLeft;
-		VectorD lowerRight;
+		Vector upperLeft;
+		Vector lowerRight;
 
 		WO* grid = nullptr;
 
 
+
+
 	};
 
-	/*class WOGridECEFElevationPhysx : WO {
+	class WOGridECEFElevationPhysx : public WO {
 
 	public:
 
-		static WOGridECEFElevationPhysx* New(PxPhysics* &p, PxScene* &scene, VectorD upperLeft, VectorD lowerRight, int z = 0, VectorD offset, Vector scale, std::string &path);
+		WOGridECEFElevationPhysx();
+
+		static WOGridECEFElevationPhysx* New(PxPhysics* p, PxScene* scene, Vector upperLeft, Vector lowerRight, int granular, Vector offset, Vector scale, std::string path, std::vector<std::vector<VectorD>>& grid);
+
+		void onCreate(PxPhysics* p, PxScene* scene, Vector upperLeft, Vector lowerRight, int granular, Vector offset, Vector &scale, std::string path, std::vector<std::vector<VectorD>> &grid);
+
+	protected: 
+		WOPhysXTriangularMesh* trimesh = nullptr;
 
 
-	};*/
+	};
 	
 }
 

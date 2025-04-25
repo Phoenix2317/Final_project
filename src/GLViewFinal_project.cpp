@@ -291,6 +291,8 @@ void Aftr::GLViewFinal_project::loadMap()
    this->actorLst = new WorldList();
    this->netLst = new WorldList();
 
+   
+
    { //Making physx scene
        PxSceneDesc sc(p->getTolerancesScale());
        sc.filterShader = PxDefaultSimulationFilterShader;
@@ -315,13 +317,13 @@ void Aftr::GLViewFinal_project::loadMap()
 
    }
 
-   {//adding to the scene
+   //{//adding to the scene
 
-       PxMaterial* gMaterial = p->createMaterial(0.5f, 0.5f, 0.6f);
-       PxRigidStatic* groundPlane = PxCreatePlane(*p, PxPlane(0, 0, 1, -0.5), *gMaterial);
-       this->scene->addActor(*groundPlane);
+   //    PxMaterial* gMaterial = p->createMaterial(0.5f, 0.5f, 0.6f);
+   //    PxRigidStatic* groundPlane = PxCreatePlane(*p, PxPlane(0, 0, 1, -0.5), *gMaterial);
+   //    this->scene->addActor(*groundPlane);
 
-   }
+   //}
 
    //Background music
    
@@ -337,8 +339,10 @@ void Aftr::GLViewFinal_project::loadMap()
 
    std::string shinyRedPlasticCube( ManagerEnvironmentConfiguration::getSMM() + "/models/cube4x4x4redShinyPlastic_pp.wrl" );
    std::string wheeledCar( ManagerEnvironmentConfiguration::getSMM() + "/models/rcx_treads.wrl" );
-   std::string grass( ManagerEnvironmentConfiguration::getLMM() + "/models/Moon_Plane/scene.gltf" );
+   std::string grass( ManagerEnvironmentConfiguration::getSMM() + "/models/grassFloor400x400_pp.wrl" );
    std::string human( ManagerEnvironmentConfiguration::getSMM() + "/models/human_chest.wrl" );
+
+   std::string moon_map(ManagerEnvironmentConfiguration::getLMM() + "/models/Moon_Plane/scene.gltf");
    
    //SkyBox Textures readily available
    std::vector< std::string > skyBoxImageNames; //vector to store texture paths
@@ -397,24 +401,32 @@ void Aftr::GLViewFinal_project::loadMap()
 
    }
 
-   { 
-      ////Create the infinite grass plane (the floor)
-      WO* wo = WO::New( grass, Vector( 1, 1, 1 ), MESH_SHADING_TYPE::mstFLAT );
-      wo->setPosition( Vector( 0, 0, 0 ) );
-      wo->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
-      wo->upon_async_model_loaded( [wo]()
-         {
-            ModelMeshSkin& grassSkin = wo->getModel()->getModelDataShared()->getModelMeshes().at( 0 )->getSkins().at( 0 );
-            grassSkin.getMultiTextureSet().at( 0 ).setTexRepeats( 5.0f );
-            grassSkin.setAmbient( aftrColor4f( 0.4f, 0.4f, 0.4f, 1.0f ) ); //Color of object when it is not in any light
-            grassSkin.setDiffuse( aftrColor4f( 1.0f, 1.0f, 1.0f, 1.0f ) ); //Diffuse color components (ie, matte shading color of this object)
-            grassSkin.setSpecular( aftrColor4f( 0.4f, 0.4f, 0.4f, 1.0f ) ); //Specular color component (ie, how "shiney" it is)
-            grassSkin.setSpecularCoefficient( 10 ); // How "sharp" are the specular highlights (bigger is sharper, 1000 is very sharp, 10 is very dull)
-         } );
-      wo->setLabel( "Grass" );
-      worldLst->push_back( wo );
+   //{ 
+   //   ////Create the infinite grass plane (the floor)
+   //   WO* wo = WO::New( grass, Vector( 1, 1, 1 ), MESH_SHADING_TYPE::mstFLAT );
+   //   wo->setPosition( Vector( 0, 0, 0 ) );
+   //   wo->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
+   //   wo->upon_async_model_loaded( [wo]()
+   //      {
+   //         ModelMeshSkin& grassSkin = wo->getModel()->getModelDataShared()->getModelMeshes().at( 0 )->getSkins().at( 0 );
+   //         grassSkin.getMultiTextureSet().at( 0 ).setTexRepeats( 5.0f );
+   //         grassSkin.setAmbient( aftrColor4f( 0.4f, 0.4f, 0.4f, 1.0f ) ); //Color of object when it is not in any light
+   //         grassSkin.setDiffuse( aftrColor4f( 1.0f, 1.0f, 1.0f, 1.0f ) ); //Diffuse color components (ie, matte shading color of this object)
+   //         grassSkin.setSpecular( aftrColor4f( 0.4f, 0.4f, 0.4f, 1.0f ) ); //Specular color component (ie, how "shiney" it is)
+   //         grassSkin.setSpecularCoefficient( 10 ); // How "sharp" are the specular highlights (bigger is sharper, 1000 is very sharp, 10 is very dull)
+   //      } );
+   //   wo->setLabel( "Grass" );
+   //   worldLst->push_back( wo );
 
-      
+   //   
+   //}
+
+   { //create moon terrain
+
+       grid->createGrid(p, scene, Vector(1.0f, 1.0f, 1.0f), (ManagerEnvironmentConfiguration::getLMM() + "/models/Moon_Plane/scene.gltf").c_str());
+       grid->
+
+
    }
 
    {
