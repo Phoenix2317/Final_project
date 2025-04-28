@@ -72,6 +72,7 @@ protected:
    AftrImGui_Final_project orbit_gui;
 
    AftrImGui_Final_project gun_gui; //Gui used to spawn the gun
+   AftrImGui_Final_project running;
    WO* moon = nullptr;
    WO* gulfstream = nullptr;
 
@@ -113,6 +114,7 @@ protected:
 
    ManagerSDLTime dt;
 
+   bool playing = false;
 
    std::chrono::time_point<std::chrono::system_clock> start, end;
    std::chrono::duration<float> elapsed_seconds = std::chrono::milliseconds(0);

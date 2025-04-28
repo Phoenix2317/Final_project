@@ -38,11 +38,15 @@ public:
 
    /*Mat4 gun_rotation(Mat4 const& origin);*/
 
+   bool startRunning();
+
 private:
    //draws the gui widgets that let the user manipulate orbit parameters
    void draw_orbit_controls();
    //draws the gun gui and will spawn the gun in using the world list and camera object given to it
    void draw_gun_spawn(WorldContainer*& worldLst, Camera** myCam);
+
+	bool running();
 
    float radius_m = 100.0f;   //adjusted by gui slider
    float current_Relangle_x = 0.0f;
@@ -58,6 +62,9 @@ private:
    float v_Globradx_g = 0.0f;
    float v_Globrady_g = 0.0f;
    float v_Globradz_g = 0.0f;
+
+   bool isRunning = false;
+   bool isPlaying = false;
 
    WO* hold_pointer;
    bool isSpawned = false;

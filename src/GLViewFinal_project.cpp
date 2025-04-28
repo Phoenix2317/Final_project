@@ -164,8 +164,15 @@ void GLViewFinal_project::updateWorld()
         this->engine->setListenerPosition(this->listen_pos, this->listen_look);
 
    }
-   
-   physxUpdate();
+
+   if (playing) {
+
+
+    physxUpdate();
+
+   }
+
+   start = std::chrono::system_clock::now();
 
   // std::cout << "Time: " << ManagerSDLTime::getTimeSinceLastMainLoopIteration() << " Secs\n";
 
@@ -313,14 +320,14 @@ void Aftr::GLViewFinal_project::loadMap()
            
        }
 
-        start = std::chrono::system_clock::now();
+       
 
    }
 
    {//adding to the scene
 
        PxMaterial* gMaterial = p->createMaterial(0.5f, 0.5f, 0.6f);
-       PxRigidStatic* groundPlane = PxCreatePlane(*p, PxPlane(0, 0, 1, 0), *gMaterial);
+       PxRigidStatic* groundPlane = PxCreatePlane(*p, PxPlane(0, 0, 1, -0.75), *gMaterial);
        this->scene->addActor(*groundPlane);
 
    }
@@ -424,7 +431,7 @@ void Aftr::GLViewFinal_project::loadMap()
    { //create moon terrain
 
        
-       WO* floor = WO::New(moon_map, Vector(1, 1, 1), MESH_SHADING_TYPE::mstFLAT);
+       WO* floor = WO::New(moon_map, Vector(5, 5, 1), MESH_SHADING_TYPE::mstFLAT);
        floor->setPosition(Vector(0, 0, 0));
        floor->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
        floor->upon_async_model_loaded([floor]() {
@@ -585,22 +592,23 @@ void Aftr::GLViewFinal_project::loadMap()
       auto woEditFunc = [this]() { this->wo_editor.draw( this->getLastSelectionQuery(), *this->getWorldContainer(), this->getCamera_functor() ); };
 
       //We will put these demo items under the "Demo" menu
-      auto showDemoWindow_ImGui     = [this]() { ImGui::ShowDemoWindow(); };
-      auto showDemoWindow_AftrDemo  = [this]() { WOImGui::draw_AftrImGui_Demo(this->gui); };
-      auto showDemoWindow_ImGuiPlot = [this]() { ImPlot::ShowDemoWindow(); };
-      auto show_moon_orbit_params   = [this]() { this->orbit_gui.draw(); };
-      auto show_gun_spawn           = [this]() { this->gun_gui.draw_gun(this->worldLst, this->getCameraPtrPtr() ); }; //draws the gun gui
+      //auto showDemoWindow_ImGui     = [this]() { ImGui::ShowDemoWindow(); };
+      //auto showDemoWindow_AftrDemo  = [this]() { WOImGui::draw_AftrImGui_Demo(this->gui); };
+      //auto showDemoWindow_ImGuiPlot = [this]() { ImPlot::ShowDemoWindow(); };
+      //auto show_moon_orbit_params   = [this]() { this->orbit_gui.draw(); };
+      //auto show_gun_spawn           = [this]() { this->gun_gui.draw_gun(this->worldLst, this->getCameraPtrPtr() ); }; //draws the gun gui
+      auto run_game                   = [this]() {playing = this->running.startRunning();};
 
       this->gui->subscribe_drawImGuiWidget(
          [=,this]() //this is a lambda, the capture clause is in [], the input argument list is in (), and the body is in {}
          {
             //We defined the callbacks above, now hook them into the menu labels
-            menu.attach( "Edit", "Show WO Editor", woEditFunc );
+           /* menu.attach( "Edit", "Show WO Editor", woEditFunc );
             menu.attach( "Demos", "Show Default ImGui Demo", showDemoWindow_ImGui );
             menu.attach( "Demos", "Show Default ImPlot Demo", showDemoWindow_ImGuiPlot );
             menu.attach( "Demos", "Show Aftr ImGui w/ Markdown & File Dialogs", showDemoWindow_AftrDemo );
-            menu.attach( "Orbit Gui", "Show Orbit", show_moon_orbit_params, true );
-            menu.attach("Gun Drop", "Spawn Weapon", show_gun_spawn, true); //adds the gun gui to the menu
+            menu.attach( "Orbit Gui", "Show Orbit", show_moon_orbit_params, true );*/
+            menu.attach("Game status", "Playing game", run_game, true); 
             menu.draw(); //The menu.draw() is the entry point for your gui. It is called once per frame to draw the GUI.
          } );
       this->worldLst->push_back( this->gui );
@@ -619,7 +627,7 @@ void GLViewFinal_project::physxUpdate() {
 
     this->elapsed_seconds = this->end - this->start;
 
-    this->start = std::chrono::system_clock::now();
+   /* this->start = std::chrono::system_clock::now();*/
 
     this->scene->simulate(elapsed_seconds.count());
 

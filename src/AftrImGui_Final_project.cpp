@@ -49,6 +49,38 @@ void Aftr::AftrImGui_Final_project::draw_orbit_controls()
    }
 }
 
+bool Aftr::AftrImGui_Final_project::startRunning() {
+
+   return this->running();
+
+}
+
+bool Aftr::AftrImGui_Final_project::running() {
+
+    if (ImGui::Begin("Start Game")) {
+
+        if (ImGui::Button( (this->isRunning ? "Play game?" : "Playing" ) ) ) 
+        {
+
+             this->isRunning = !this->isRunning;
+             if (isRunning) {
+
+                 this->isPlaying = !this->isPlaying;
+
+             }
+            
+
+        }
+       
+
+        ImGui::End();
+
+    }
+
+    return this->isPlaying;
+
+
+}
 
 //creates the gun gui
 void Aftr::AftrImGui_Final_project::draw_gun_spawn(WorldContainer*& worldLst, Camera** myCam) {

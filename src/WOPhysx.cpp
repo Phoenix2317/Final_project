@@ -116,7 +116,7 @@ void WOPhysx::updatePoseFromPhysicsEngine() {
 }
 
 void WOPhysx::setPosition(float x, float y, float z) {
-
+    WO::setPosition(x,y,z);
     PxTransform t(x, y, z);
     if (actor != nullptr) {
 
