@@ -317,13 +317,13 @@ void Aftr::GLViewFinal_project::loadMap()
 
    }
 
-   //{//adding to the scene
+   {//adding to the scene
 
-   //    PxMaterial* gMaterial = p->createMaterial(0.5f, 0.5f, 0.6f);
-   //    PxRigidStatic* groundPlane = PxCreatePlane(*p, PxPlane(0, 0, 1, -0.5), *gMaterial);
-   //    this->scene->addActor(*groundPlane);
+       PxMaterial* gMaterial = p->createMaterial(0.5f, 0.5f, 0.6f);
+       PxRigidStatic* groundPlane = PxCreatePlane(*p, PxPlane(0, 0, 1, 0), *gMaterial);
+       this->scene->addActor(*groundPlane);
 
-   //}
+   }
 
    //Background music
    
@@ -342,7 +342,7 @@ void Aftr::GLViewFinal_project::loadMap()
    std::string grass( ManagerEnvironmentConfiguration::getSMM() + "/models/grassFloor400x400_pp.wrl" );
    std::string human( ManagerEnvironmentConfiguration::getSMM() + "/models/human_chest.wrl" );
 
-   std::string moon_map(ManagerEnvironmentConfiguration::getLMM() + "/models/Moon_Plane/scene.gltf");
+   std::string moon_map(ManagerEnvironmentConfiguration::getLMM() + "models/Moon_Plane/scene.gltf");
    
    //SkyBox Textures readily available
    std::vector< std::string > skyBoxImageNames; //vector to store texture paths
@@ -401,7 +401,7 @@ void Aftr::GLViewFinal_project::loadMap()
 
    }
 
-   //{ 
+   { 
    //   ////Create the infinite grass plane (the floor)
    //   WO* wo = WO::New( grass, Vector( 1, 1, 1 ), MESH_SHADING_TYPE::mstFLAT );
    //   wo->setPosition( Vector( 0, 0, 0 ) );
@@ -419,82 +419,96 @@ void Aftr::GLViewFinal_project::loadMap()
    //   worldLst->push_back( wo );
 
    //   
-   //}
+   }
 
    { //create moon terrain
 
-       grid->createGrid(p, scene, Vector(1.0f, 1.0f, 1.0f), (ManagerEnvironmentConfiguration::getLMM() + "/models/Moon_Plane/scene.gltf").c_str());
-       grid->
+       
+       WO* floor = WO::New(moon_map, Vector(1, 1, 1), MESH_SHADING_TYPE::mstFLAT);
+       floor->setPosition(Vector(0, 0, 0));
+       floor->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
+       floor->upon_async_model_loaded([floor]() {
 
+           ModelMeshSkin& moonSkin = floor->getModel()->getModelDataShared()->getModelMeshes().at(0)->getSkins().at(0);
+           moonSkin.getMultiTextureSet().at(0).setTexRepeats(5.0f);
+           moonSkin.setAmbient(aftrColor4f(0.4f, 0.4f, 0.4f, 1.0f));
+           moonSkin.setDiffuse(aftrColor4f(1.0f, 1.0f, 1.0f, 1.0f));
+           moonSkin.setSpecular(aftrColor4f(0.4f, 0.4f, 0.4f, 1.0f));
+           moonSkin.setSpecularCoefficient(50);
+
+           });
+
+       floor->setLabel("moon floor");
+       worldLst->push_back(floor);
 
    }
 
    {
-      this->gulfstream = WO::New( ManagerEnvironmentConfiguration::getSMM() + "/models/Aircraft/Gulfstream3/G3.obj", Vector(1.0f, 1.0f, 1.0f ), MESH_SHADING_TYPE::mstAUTO );
-      this->gulfstream->setPosition( Vector( 0, 0, 10 ) );
-      this->gulfstream->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
-      this->gulfstream->upon_async_model_loaded( [this]()
-         {
-            ModelMeshSkin& skin = this->gulfstream->getModel()->getModelDataShared()->getModelMeshes().at( 0 )->getSkins().at( 0 );
-            skin.setAmbient( aftrColor4f( 0.1f, 0.1f, 0.1f, 1.0f ) ); //Color of object when it is not in any light
-            //skin.setDiffuse( aftrColor4f( .1f, .1f, .5f, 1.0f ) ); //Diffuse color components (ie, matte shading color of this object) // Make it blue? Why not?
-            skin.setSpecular( aftrColor4f( 0.4f, 0.4f, 0.4f, 1.0f ) ); //Specular color component (ie, how "shiney" it is)
-            skin.setSpecularCoefficient( 10 ); // How "sharp" are the specular highlights (bigger is sharper, 1000 is very sharp, 10 is very dull)
-         } );
-      gulfstream->setLabel( "Gulfstream GIII" );
-      worldLst->push_back( this->gulfstream );
+   //   this->gulfstream = WO::New( ManagerEnvironmentConfiguration::getSMM() + "/models/Aircraft/Gulfstream3/G3.obj", Vector(1.0f, 1.0f, 1.0f ), MESH_SHADING_TYPE::mstAUTO );
+   //   this->gulfstream->setPosition( Vector( 0, 0, 10 ) );
+   //   this->gulfstream->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
+   //   this->gulfstream->upon_async_model_loaded( [this]()
+   //      {
+   //         ModelMeshSkin& skin = this->gulfstream->getModel()->getModelDataShared()->getModelMeshes().at( 0 )->getSkins().at( 0 );
+   //         skin.setAmbient( aftrColor4f( 0.1f, 0.1f, 0.1f, 1.0f ) ); //Color of object when it is not in any light
+   //         //skin.setDiffuse( aftrColor4f( .1f, .1f, .5f, 1.0f ) ); //Diffuse color components (ie, matte shading color of this object) // Make it blue? Why not?
+   //         skin.setSpecular( aftrColor4f( 0.4f, 0.4f, 0.4f, 1.0f ) ); //Specular color component (ie, how "shiney" it is)
+   //         skin.setSpecularCoefficient( 10 ); // How "sharp" are the specular highlights (bigger is sharper, 1000 is very sharp, 10 is very dull)
+   //      } );
+   //   gulfstream->setLabel( "Gulfstream GIII" );
+   //   worldLst->push_back( this->gulfstream );
    }
 
    {
-      //Make a sphere
-      this->moon = WO::New();
-      MGLIndexedGeometry* mglSphere = MGLIndexedGeometry::New( this->moon );
-      IndexedGeometrySphereTriStrip* geoSphere = IndexedGeometrySphereTriStrip::New( 3.0f, 12, 12, true, true );
-      mglSphere->setIndexedGeometry( geoSphere );
-      this->moon->setModel( mglSphere );
-      this->moon->setLabel( "Moon" );
-      this->moon->setPosition( { 15,15,15 } );
-      this->moon->renderOrderType = RENDER_ORDER_TYPE::roTRANSPARENT;
-      this->worldLst->push_back( this->moon );
+   //   //Make a sphere
+   //   this->moon = WO::New();
+   //   MGLIndexedGeometry* mglSphere = MGLIndexedGeometry::New( this->moon );
+   //   IndexedGeometrySphereTriStrip* geoSphere = IndexedGeometrySphereTriStrip::New( 3.0f, 12, 12, true, true );
+   //   mglSphere->setIndexedGeometry( geoSphere );
+   //   this->moon->setModel( mglSphere );
+   //   this->moon->setLabel( "Moon" );
+   //   this->moon->setPosition( { 15,15,15 } );
+   //   this->moon->renderOrderType = RENDER_ORDER_TYPE::roTRANSPARENT;
+   //   this->worldLst->push_back( this->moon );
 
 
-     
+   //  
 
 
-      //Place a texture on the sphere, now its a moon
-      fmt::print( "To the moon...\n" );
-      Tex tex = *ManagerTex::loadTexAsync( ManagerEnvironmentConfiguration::getSMM() + "/images/moonMap.jpg" );
-      this->moon->getModel()->getSkin().getMultiTextureSet().at( 0 ) = tex;
-      this->moon->setPosition( {15,2,10});
+   //   //Place a texture on the sphere, now its a moon
+   //   fmt::print( "To the moon...\n" );
+   //   Tex tex = *ManagerTex::loadTexAsync( ManagerEnvironmentConfiguration::getSMM() + "/images/moonMap.jpg" );
+   //   this->moon->getModel()->getSkin().getMultiTextureSet().at( 0 ) = tex;
+   //   this->moon->setPosition( {15,2,10});
 
 
-      //setting up 3D sound for Moon
-      if (this->moon != nullptr) {
+   //   //setting up 3D sound for Moon
+   //   if (this->moon != nullptr) {
 
-          this->moon_pos.set(this->moon->getPosition().x, this->moon->getPosition().y, this->moon->getPosition().z);
+   //       this->moon_pos.set(this->moon->getPosition().x, this->moon->getPosition().y, this->moon->getPosition().z);
 
-          this->moon_noise = this->engine->play3D((ManagerEnvironmentConfiguration::getLMM() + "/sounds/Space.mp3").c_str(), this->moon_pos, true, false, true);
+   //       this->moon_noise = this->engine->play3D((ManagerEnvironmentConfiguration::getLMM() + "/sounds/Space.mp3").c_str(), this->moon_pos, true, false, true);
 
-      }
+   //   }
 
-      this->listen_pos.set(this->cam->getPosition().x, this->cam->getPosition().y, this->cam->getPosition().z);
-      this->listen_look.set(this->cam->getLookDirection().x, this->cam->getLookDirection().y, this->cam->getLookDirection().z);
-      
-    
+   //   this->listen_pos.set(this->cam->getPosition().x, this->cam->getPosition().y, this->cam->getPosition().z);
+   //   this->listen_look.set(this->cam->getLookDirection().x, this->cam->getLookDirection().y, this->cam->getLookDirection().z);
+   //   
+   // 
 
-      this->engine->setListenerPosition(this->listen_pos, this->listen_look);
+   //   this->engine->setListenerPosition(this->listen_pos, this->listen_look);
 
 
       //We always want some axes, too!
-      WO* axes = WOAxesTubes::New( { 15.0f,15.0f,15.0f }, .2f );
-      axes->setParentWorldObject( this->moon );
-      axes->setPosition( this->moon->getPosition() ); //match parent position before locking
-      axes->lockWRTparent(); //makes a joint that "welds" this child rigidly to parent
-      this->moon->getChildren().push_back( axes );     
+   //   WO* axes = WOAxesTubes::New( { 15.0f,15.0f,15.0f }, .2f );
+   //   axes->setParentWorldObject( this->moon );
+   //   axes->setPosition( this->moon->getPosition() ); //match parent position before locking
+   //   axes->lockWRTparent(); //makes a joint that "welds" this child rigidly to parent
+   //   this->moon->getChildren().push_back( axes );     
    }
 
    {//setting up moon lander
-
+       
        this->lander = WOPhysx::New((ManagerEnvironmentConfiguration::getLMM() + "/models/Apollo_Lunar_Module.glb").c_str(), Vector(1.0f, 1.0f, 1.0f), MESH_SHADING_TYPE::mstAUTO, this->scene,this->p, "lander");
        this->lander->setPosition(35.0f, 30.0f, 10.0f);
        this->lander->renderOrderType = RENDER_ORDER_TYPE::roOVERLAY;
@@ -508,7 +522,7 @@ void Aftr::GLViewFinal_project::loadMap()
 
            });
        lander->setLabel("Moon_Lander");
-       worldLst->push_back(this->lander);
+       worldLst->push_back(lander);
    }
 
   
@@ -517,40 +531,40 @@ void Aftr::GLViewFinal_project::loadMap()
    { //making a physics cube
 
 
-      this->cube = WOPhysx::New((ManagerEnvironmentConfiguration::getLMM() + "/models/cube4x4x4redShinyPlastic_pp.wrl").c_str(), Vector(1.0f, 1.0f, 1.0f), MESH_SHADING_TYPE::mstAUTO, this->scene,this->p, "cube");
-       
-       this->cube->setPosition(35.0f,15.0f,4.0f);
-       this->cube->renderOrderType = RENDER_ORDER_TYPE::roOVERLAY;
-       this->cube->upon_async_model_loaded([this]() 
-            {
+   //   this->cube = WOPhysx::New((ManagerEnvironmentConfiguration::getLMM() + "/models/cube4x4x4redShinyPlastic_pp.wrl").c_str(), Vector(1.0f, 1.0f, 1.0f), MESH_SHADING_TYPE::mstAUTO, this->scene,this->p, "cube");
+   //    
+   //    this->cube->setPosition(35.0f,15.0f,4.0f);
+   //    this->cube->renderOrderType = RENDER_ORDER_TYPE::roOVERLAY;
+   //    this->cube->upon_async_model_loaded([this]() 
+   //         {
 
-               ModelMeshSkin& skin = this->cube->getModel()->getModelDataShared()->getModelMeshes().at(0)->getSkins().at(0);
-               skin.setAmbient(aftrColor4f(0.1f, 0.1f, 0.1f, 1.0f));
-               skin.setDiffuse(aftrColor4f(0.1f, 0.1f, 0.5f, 1.0f));
-               skin.setSpecular(aftrColor4f(0.4f, 0.4f, 0.4f, 1.0f));
-               skin.setSpecularCoefficient(100);
+   //            ModelMeshSkin& skin = this->cube->getModel()->getModelDataShared()->getModelMeshes().at(0)->getSkins().at(0);
+   //            skin.setAmbient(aftrColor4f(0.1f, 0.1f, 0.1f, 1.0f));
+   //            skin.setDiffuse(aftrColor4f(0.1f, 0.1f, 0.5f, 1.0f));
+   //            skin.setSpecular(aftrColor4f(0.4f, 0.4f, 0.4f, 1.0f));
+   //            skin.setSpecularCoefficient(100);
 
-            });
-       this->cube->setLabel("Shiny");
+   //         });
+   //    this->cube->setLabel("Shiny");
 
-       worldLst->push_back(this->cube);
+   //    worldLst->push_back(this->cube);
 
-       this->cube2 = WOPhysx::New((ManagerEnvironmentConfiguration::getLMM() + "/models/cube4x4x4redShinyPlastic_pp.wrl").c_str(), Vector(1.0f, 1.0f, 1.0f), MESH_SHADING_TYPE::mstAUTO, this->scene, this->p, "cube");
+   //    this->cube2 = WOPhysx::New((ManagerEnvironmentConfiguration::getLMM() + "/models/cube4x4x4redShinyPlastic_pp.wrl").c_str(), Vector(1.0f, 1.0f, 1.0f), MESH_SHADING_TYPE::mstAUTO, this->scene, this->p, "cube");
 
-       this->cube2->setPosition(35.0f, 15.0f, 20.0f);
-       this->cube2->renderOrderType = RENDER_ORDER_TYPE::roOVERLAY;
-       this->cube2->upon_async_model_loaded([this]()
-           {
+   //    this->cube2->setPosition(35.0f, 15.0f, 20.0f);
+   //    this->cube2->renderOrderType = RENDER_ORDER_TYPE::roOVERLAY;
+   //    this->cube2->upon_async_model_loaded([this]()
+   //        {
 
-               ModelMeshSkin& skin = this->cube2->getModel()->getModelDataShared()->getModelMeshes().at(0)->getSkins().at(0);
-               skin.setAmbient(aftrColor4f(0.1f, 0.1f, 0.1f, 1.0f));
-               skin.setDiffuse(aftrColor4f(0.1f, 0.1f, 0.5f, 1.0f));
-               skin.setSpecular(aftrColor4f(0.4f, 0.4f, 0.4f, 1.0f));
-               skin.setSpecularCoefficient(100);
+   //            ModelMeshSkin& skin = this->cube2->getModel()->getModelDataShared()->getModelMeshes().at(0)->getSkins().at(0);
+   //            skin.setAmbient(aftrColor4f(0.1f, 0.1f, 0.1f, 1.0f));
+   //            skin.setDiffuse(aftrColor4f(0.1f, 0.1f, 0.5f, 1.0f));
+   //            skin.setSpecular(aftrColor4f(0.4f, 0.4f, 0.4f, 1.0f));
+   //            skin.setSpecularCoefficient(100);
 
-           });
-       this->cube2->setLabel("Shiny2");
-       worldLst->push_back(this->cube2);
+   //        });
+   //    this->cube2->setLabel("Shiny2");
+   //    worldLst->push_back(this->cube2);
 
    }
 

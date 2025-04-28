@@ -14,6 +14,14 @@ WOPhysXTriangularMesh::WOPhysXTriangularMesh() : IFace(this)
 
 }
 
+WOPhysXTriangularMesh::~WOPhysXTriangularMesh() {
+
+	delete vertexListCopy;
+	delete indicesCopy;
+	actor->release();
+
+}
+
 WOPhysXTriangularMesh* WOPhysXTriangularMesh::New(const std::string& path, Vector scale, MESH_SHADING_TYPE mst, PxPhysics* p, PxScene* scene)
 {
 	WOPhysXTriangularMesh* tri = new WOPhysXTriangularMesh();
@@ -75,7 +83,7 @@ void WOPhysXTriangularMesh::onCreate(const std::string& path, const Vector& scal
 	PxTransform t({ 0,0,0 });
 
 	actor = p->createRigidStatic(t);
-	bool b = actor->attachShape(*shape);
+	actor->attachShape(*shape);
 
 	actor->userData = this;
 	scene->addActor(*actor);

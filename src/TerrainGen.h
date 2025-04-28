@@ -11,6 +11,25 @@ using namespace physx;
 namespace Aftr
 {
 
+	
+
+	class WOGridECEFElevationPhysx : public WO {
+
+	public:
+
+		WOGridECEFElevationPhysx();
+		~WOGridECEFElevationPhysx();
+
+		static WOGridECEFElevationPhysx* New(PxPhysics* p, PxScene* scene, Vector upperLeft, Vector lowerRight, int granular, Vector offset, Vector scale, std::string& path, std::vector<std::vector<VectorD>>& grid);
+		
+		void onCreate(PxPhysics* p, PxScene* scene, Vector upperLeft, Vector lowerRight, int granular, Vector offset, Vector &scale, std::string path, std::vector<std::vector<VectorD>> &grid);
+
+		WOPhysXTriangularMesh* trimesh = nullptr;
+		
+
+
+	};
+
 	class TerrainGen {
 	public:
 
@@ -54,8 +73,11 @@ namespace Aftr
 		 }
 
 		 TerrainGen();
+		 ~TerrainGen();
 
 		 void createGrid(PxPhysics* p, PxScene* scene, Vector scale, std::string path);
+
+		 Aftr::WOGridECEFElevationPhysx* gridEleva = nullptr;
 
 	protected:
 
@@ -77,29 +99,11 @@ namespace Aftr
 		Vector upperLeft;
 		Vector lowerRight;
 
-		WO* grid = nullptr;
 
-
-
-
-	};
-
-	class WOGridECEFElevationPhysx : public WO {
-
-	public:
-
-		WOGridECEFElevationPhysx();
-
-		static WOGridECEFElevationPhysx* New(PxPhysics* p, PxScene* scene, Vector upperLeft, Vector lowerRight, int granular, Vector offset, Vector scale, std::string path, std::vector<std::vector<VectorD>>& grid);
-
-		void onCreate(PxPhysics* p, PxScene* scene, Vector upperLeft, Vector lowerRight, int granular, Vector offset, Vector &scale, std::string path, std::vector<std::vector<VectorD>> &grid);
-
-	protected: 
-		WOPhysXTriangularMesh* trimesh = nullptr;
+		
 
 
 	};
-	
 }
 
 

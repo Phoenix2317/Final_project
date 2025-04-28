@@ -118,7 +118,8 @@ protected:
    std::chrono::duration<float> elapsed_seconds = std::chrono::milliseconds(0);
    
 
-   TerrainGen* grid = nullptr;
+   /*TerrainGen* grid = nullptr;*/
+  /* WOPhysx* floor = nullptr;*/
 
    
   

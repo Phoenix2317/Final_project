@@ -3,13 +3,14 @@
 #include "WOPhysx.h"
 #include "WO.h"
 #include "PxPhysicsAPI.h"
+#include "TerrainGen.h"
 
 using namespace Aftr;
 using namespace physx;
 
 
 
-WOPhysx* WOPhysx::New(const std::string& modelFileName, Vector scale, MESH_SHADING_TYPE shadingType, PxScene* scene, PxPhysics* p, const char* body)
+WOPhysx* WOPhysx::New(const std::string& modelFileName, Vector scale, MESH_SHADING_TYPE shadingType, PxScene* scene, PxPhysics* p, std::string body)
 {
     WOPhysx* wophysx = new WOPhysx();
     wophysx->onCreate(modelFileName, scale, shadingType, scene, p, body);
@@ -31,7 +32,7 @@ WOPhysx::~WOPhysx() {
 
 }
 
-void WOPhysx::onCreate(const std::string& path, const Vector& scale, Aftr::MESH_SHADING_TYPE mst, PxScene* scene, PxPhysics* p, const char* body) {
+void WOPhysx::onCreate(const std::string& path, const Vector& scale, Aftr::MESH_SHADING_TYPE mst, PxScene* scene, PxPhysics* p, std::string body) {
 
     WO::onCreate(path, scale, mst);
 
@@ -40,32 +41,59 @@ void WOPhysx::onCreate(const std::string& path, const Vector& scale, Aftr::MESH_
 
     PxMaterial* gMaterial = p->createMaterial(0.5f, 0.5f, 0.6f);
 
-    if (body = "cube") {
+    if (body == "cube") {
 
          shape = p->createShape(PxBoxGeometry(2,2,2), *gMaterial, true);
          t = { 20,20,20 };
     }
-    else if (body = "lander") {
+    else if (body == "lander") {
 
         shape = p->createShape(PxBoxGeometry(2,4, 2), *gMaterial, true);
         t = { 20,20,20 };
     
     }
-    else if (body = "cylinder") {
+    else if (body == "cylinder") {
 
         shape = p->createShape(PxCapsuleGeometry(2, 3), *gMaterial, true);
 
         t = { 0, 20, 20 };
 
     }
+    
+    if (body == "plane") {
 
-    this->actor = p->createRigidDynamic(t);
+        t = { 0,0,0 };
 
-    actor->attachShape(*shape);
+        TerrainGen* floor = new TerrainGen();
+        floor->createGrid(p, scene, scale, path);
+       /* this->actorST = p->createRigidStatic(t);
 
-    actor->userData = this;
+        this->actorST->userData = floor;*/
 
-    scene->addActor(*actor);
+        
+
+    }
+    else {
+
+        
+
+        if (shape != nullptr) {
+
+            this->actor = p->createRigidDynamic(t);
+
+            actor->attachShape(*shape);
+
+              actor->userData = this;
+
+               scene->addActor(*actor);
+
+
+        }
+
+        
+
+    }
+   
 
 }
 
@@ -90,7 +118,11 @@ void WOPhysx::updatePoseFromPhysicsEngine() {
 void WOPhysx::setPosition(float x, float y, float z) {
 
     PxTransform t(x, y, z);
+    if (actor != nullptr) {
 
-    this->actor->setGlobalPose(t);
+        this->actor->setGlobalPose(t);
+
+    }
+    
 
 }

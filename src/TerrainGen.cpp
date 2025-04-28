@@ -25,14 +25,14 @@ TerrainGen::TerrainGen() {
 
 void TerrainGen::createGrid(PxPhysics* p, PxScene* scene, Vector scale, std::string path) {
 
-  std::vector grid = ManagerGDAL::parseGDALTifAssumingGeodesicSpacing((ManagerEnvironmentConfiguration::getLMM() + "/models/Moon_Plane/scene.gltf").c_str());
+  std::vector grid = ManagerGDAL::parseGDALTifAssumingGeodesicSpacing((ManagerEnvironmentConfiguration::getLMM() + "models/Moon_Plane/scene.gltf").c_str());
 
-  top = grid[0][0].x;
-  bottom = grid[1][0].x;
-  vert = top - bottom;
+    top = 1.8;
+    bottom = 1.8;
+    vert = top - bottom;
 
-  left = grid[0][0].y;
-  right = grid[0][1].y;
+    left = 1.8;
+    right = 1.8;
   horz = right - left;
 
   Vector temp((top + bottom) / 2, (left + right) / 2, 0);
@@ -45,12 +45,12 @@ void TerrainGen::createGrid(PxPhysics* p, PxScene* scene, Vector scale, std::str
   upperLeft = Vector(top, left, 0);
   lowerRight = Vector(bottom, right, 0);
 
-  WOGridECEFElevationPhysx* gridEleva = WOGridECEFElevationPhysx::New(p,scene,upperLeft,lowerRight,0,offset, scale ,path, grid);
+  this->gridEleva = WOGridECEFElevationPhysx::New(p,scene,upperLeft,lowerRight,0,offset, scale ,path, grid);
 
-  gridEleva->setLabel("grid");
+  this->gridEleva->setLabel("grid");
 
   ManagerGLView::getGLView()->getWorldContainer()->push_back(gridEleva);
-  gridEleva->upon_async_model_loaded([gridEleva]()
+  gridEleva->upon_async_model_loaded([this]()
       {
           std::string texPath = ManagerEnvironmentConfiguration::getVariableValue("texpath");
           std::string texture = texPath + ManagerEnvironmentConfiguration::getVariableValue("texture");
@@ -70,9 +70,36 @@ void TerrainGen::createGrid(PxPhysics* p, PxScene* scene, Vector scale, std::str
 
 }
 
+TerrainGen::~TerrainGen() {
+
+    top = 0;
+    bottom = 0;
+    left = 0;
+    right = 0;
+    vert = 0;
+    horz = 0;
+    offset.clear();
+    centerOfWorld.clear();
+    gravityDirection.clear();
+    scale.clear();
+    upperLeft.clear();
+    lowerRight.clear();
+
+
+
+}
+
 WOGridECEFElevationPhysx::WOGridECEFElevationPhysx() : IFace(this) {
 
     WO::initInstanceData();
+
+}
+
+WOGridECEFElevationPhysx::~WOGridECEFElevationPhysx() {
+
+    trimesh->~WOPhysXTriangularMesh();
+    WO::~WO();
+
 
 }
 
@@ -135,7 +162,7 @@ void WOGridECEFElevationPhysx::onCreate(PxPhysics* p, PxScene* scene, Vector upp
 
     PxTransform t2(m);
 
-
+    /*scene->*/
 
 }
 

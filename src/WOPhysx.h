@@ -29,11 +29,11 @@ namespace Aftr
 		* \param body = shape of object (e.g. cube, cylinder, etc.)
 		* 
 		*/
-		static WOPhysx* New(const std::string& modelFileName, Vector scale, MESH_SHADING_TYPE shadingType, PxScene* scene, PxPhysics* p, const char* body);
+		static WOPhysx* New(const std::string& modelFileName, Vector scale, MESH_SHADING_TYPE shadingType, PxScene* scene, PxPhysics* p, std::string body);
 
 		~WOPhysx();
 
-		void onCreate(const std::string& path, const Vector& scale, Aftr::MESH_SHADING_TYPE mst, PxScene* scene, PxPhysics* p, const char* body);
+		void onCreate(const std::string& path, const Vector& scale, Aftr::MESH_SHADING_TYPE mst, PxScene* scene, PxPhysics* p, std::string body );
 
 
 		void updatePoseFromPhysicsEngine();
@@ -45,6 +45,7 @@ namespace Aftr
 	private:
 
 		PxRigidDynamic* actor = nullptr;
+		PxRigidStatic* actorST = nullptr;
 
 	};
 }

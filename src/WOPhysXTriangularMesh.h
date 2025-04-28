@@ -9,6 +9,7 @@ namespace Aftr
     public:
 
         WOPhysXTriangularMesh();
+        ~WOPhysXTriangularMesh();
 
         static WOPhysXTriangularMesh* New(const std::string& path, Vector scale, MESH_SHADING_TYPE mst, physx::PxPhysics* p, physx::PxScene* scene);
 
