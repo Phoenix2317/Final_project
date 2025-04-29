@@ -171,6 +171,17 @@ void GLViewFinal_project::updateWorld()
     physxUpdate();
 
    }
+   
+   if (this->lander != nullptr) {
+
+       if (this->cam != nullptr) {
+           this->cam->setPosition(this->lander->getPosition() + Vector(20,0,0));
+           this->cam->setCameraLookDirection(-this->lander->getLookDirection().x_axis());
+       }
+       
+   }
+
+   
 
    start = std::chrono::system_clock::now();
 
@@ -214,19 +225,25 @@ void GLViewFinal_project::onKeyDown(const SDL_KeyboardEvent& key)
     
 
     if (key.keysym.sym == SDLK_w) { //Allows player to move forward
-        this->cam->moveInLookDirection();
+       
+        if (this->lander != nullptr) {
+
+            this->lander->getActor()->addForce(PxVec3(0.0f, 0.0f, 10.0f),PxForceMode::eACCELERATION);
+
+        }
+
     }
 
     if (key.keysym.sym == SDLK_d) { //allows player to move to the right
-        this->cam->moveRight();
+       
     }
 
     if (key.keysym.sym == SDLK_s) { //allows player to move backwards
-        this->cam->moveOppositeLookDirection();
+        
     }
 
     if (key.keysym.sym == SDLK_a) { //allows the player to move left
-        this->cam->moveLeft();
+        
     }
 
     if (key.keysym.sym == SDLK_p) { //plays music
@@ -268,20 +285,6 @@ void GLViewFinal_project::onKeyDown(const SDL_KeyboardEvent& key)
 
     }
 
-    if (key.keysym.sym == SDLK_SPACE) {
-
-        msgWO.xPos = 50;
-        msgWO.yPos = 50;
-        msgWO.zPos = 25;
-       // client->sendNetMsgSynchronousTCP(msgWO);
-
-        msgWO.xPos = 0;
-        msgWO.yPos = 0;
-        msgWO.zPos = 0;
-       
-
-    }
-
 }
 
 
@@ -307,7 +310,7 @@ void Aftr::GLViewFinal_project::loadMap()
        this->scene = p->createScene(sc);
        this->scene->setFlag(physx::PxSceneFlag::eENABLE_ACTIVE_ACTORS, true);
 
-       this->scene->setGravity(PxVec3(0.0f, 0.0f, -9.8f));
+       this->scene->setGravity(PxVec3(0.0f, 0.0f, -1.6f));
 
        this->gPvd->connect(*transport, physx::PxPvdInstrumentationFlag::eALL);
 
@@ -517,7 +520,7 @@ void Aftr::GLViewFinal_project::loadMap()
    {//setting up moon lander
        
        this->lander = WOPhysx::New((ManagerEnvironmentConfiguration::getLMM() + "/models/Apollo_Lunar_Module.glb").c_str(), Vector(1.0f, 1.0f, 1.0f), MESH_SHADING_TYPE::mstAUTO, this->scene,this->p, "lander");
-       this->lander->setPosition(35.0f, 30.0f, 10.0f);
+       this->lander->setPosition(35.0f, 30.0f, 50.0f);
        this->lander->renderOrderType = RENDER_ORDER_TYPE::roOVERLAY;
        this->lander->upon_async_model_loaded([this]()
            {

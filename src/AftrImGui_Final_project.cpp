@@ -59,7 +59,7 @@ bool Aftr::AftrImGui_Final_project::running() {
 
     if (ImGui::Begin("Start Game")) {
 
-        if (ImGui::Button( (this->isRunning ? "Play game?" : "Playing" ) ) ) 
+        if (ImGui::Button( (this->isRunning ? "Playing" : "Play game?" ) ) ) 
         {
 
              this->isRunning = !this->isRunning;

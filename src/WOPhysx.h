@@ -40,6 +40,8 @@ namespace Aftr
 
 		void setPosition(float x, float y, float z);
 
+		PxRigidDynamic* getActor() { return actor; }
+
 
 
 	private:
