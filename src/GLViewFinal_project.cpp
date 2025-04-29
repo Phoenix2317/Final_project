@@ -236,6 +236,12 @@ void GLViewFinal_project::onKeyDown(const SDL_KeyboardEvent& key)
 
     if (key.keysym.sym == SDLK_d) { //allows player to move to the right
        
+        if (this->lander != nullptr) {
+
+            this->lander->getActor()->addForce(PxVec3(0.0f, 10.0f, 0.0f), PxForceMode::eACCELERATION);
+
+        }
+
     }
 
     if (key.keysym.sym == SDLK_s) { //allows player to move backwards
@@ -243,6 +249,12 @@ void GLViewFinal_project::onKeyDown(const SDL_KeyboardEvent& key)
     }
 
     if (key.keysym.sym == SDLK_a) { //allows the player to move left
+
+        if (this->lander != nullptr) {
+
+            this->lander->getActor()->addForce(PxVec3(0.0f, -10.0f, 0.0f), PxForceMode::eACCELERATION);
+
+        }
         
     }
 
