@@ -39,6 +39,7 @@ public:
    /*Mat4 gun_rotation(Mat4 const& origin);*/
 
    bool startRunning();
+   void stopRunning() { isRunning = false; isPlaying = false; }
 
 private:
    //draws the gui widgets that let the user manipulate orbit parameters

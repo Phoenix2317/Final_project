@@ -84,6 +84,7 @@ protected:
    WOPhysx* lander = nullptr;
   
    int count = 0;
+   float random_y = -200 + (std::rand() % (401));
    
    WOPhysx* cube = nullptr;
    WOPhysx* cube2 = nullptr;

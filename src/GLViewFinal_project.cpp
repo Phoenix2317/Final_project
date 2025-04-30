@@ -171,6 +171,36 @@ void GLViewFinal_project::updateWorld()
 
     physxUpdate();
 
+    if (this->count == 0) {
+
+        if (this->random_y < 30) {
+
+            std::cout << "Goal is located to the left\n";
+
+        }
+        else if (this->random_y > 30) {
+
+            std::cout << "Goal is located to the right\n";
+
+        }
+        else {
+
+            std::cout << "Goal is below you\n";
+
+        }
+
+        this->count++;
+
+    }
+
+   }
+
+   if (this->lander->getPosition().x > 35.5f || this->lander->getPosition().x < 34.5f) {
+
+       
+       this->lander->setPosition(35.0f, this->lander->getPosition().y, this->lander->getPosition().z);
+       
+
    }
    
    if (this->lander != nullptr) {
@@ -184,13 +214,14 @@ void GLViewFinal_project::updateWorld()
 
    if (this->wayPt->isTriggered() == 1) {
 
-       if (this->count == 0) {
+       if (this->count == 1) {
 
             this->engine->play2D((ManagerEnvironmentConfiguration::getLMM() + "sounds/success-fanfare-trumpets-6185.mp3").c_str());
             this->count++;
+            this->runs.stopRunning();
+            this->playing = false;
+            
        }
-
-       
 
    }
 
@@ -235,7 +266,11 @@ void GLViewFinal_project::onKeyDown(const SDL_KeyboardEvent& key)
     if (key.keysym.sym == SDLK_0)
         this->setNumPhysicsStepsPerRender(1);
 
-    
+    if (key.keysym.sym == SDLK_COMMA) {
+
+        std::cout << "\n\nLander current position: " << this->lander->getPosition() << std::endl;
+
+    }
 
     if (key.keysym.sym == SDLK_w) { //Allows player to move forward
        
@@ -356,8 +391,29 @@ void Aftr::GLViewFinal_project::loadMap()
 
        PxMaterial* gMaterial = p->createMaterial(0.5f, 0.5f, 0.6f);
        PxRigidStatic* groundPlane = PxCreatePlane(*p, PxPlane(0, 0, 1, -0.75), *gMaterial);
+       groundPlane->setActorFlag(PxActorFlag::eVISUALIZATION, true);
        this->scene->addActor(*groundPlane);
 
+
+   }
+
+   {//invisible wall
+
+       PxMaterial* gMaterial = p->createMaterial(0.5f, 0.5f, 0.6f);
+       PxRigidStatic* WallPlane = PxCreatePlane(*p, PxPlane(0, 1, 0, 225.0f), *gMaterial);
+       WallPlane->setActorFlag(PxActorFlag::eVISUALIZATION, true);
+         
+       this->scene->addActor(*WallPlane);
+
+   }
+
+   {
+
+       PxMaterial* gMaterial = p->createMaterial(0.5f, 0.5f, 0.6f);
+       PxRigidStatic* WallPlane = PxCreatePlane(*p, PxPlane(0, -1, 0, 225.0f), *gMaterial);
+       WallPlane->setActorFlag(PxActorFlag::eVISUALIZATION, true);
+       this->scene->addActor(*WallPlane);
+       
    }
 
    //Background music
@@ -558,6 +614,9 @@ void Aftr::GLViewFinal_project::loadMap()
            });
        lander->setLabel("Moon_Lander");
        worldLst->push_back(lander);
+
+       
+
    }
 
   
@@ -686,8 +745,9 @@ void GLViewFinal_project::createFinal_projectWayPoints()
    params.frequency = 60000;
    params.activators.push_back(this->lander);
    params.visible = true;
+
    this->wayPt = WOWaypointLander::New( params, 3 ,this->playing);
-   wayPt->setPosition( Vector( 35, 30, 3 ) );
+   wayPt->setPosition( Vector( 35, this->random_y, 3 ) );
    worldLst->push_back( wayPt );
 }
 
