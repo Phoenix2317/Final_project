@@ -44,6 +44,7 @@
 #include "WOPhysx.h"
 
 #include "PxPhysicsAPI.h"
+#include "WOWaypointLander.h"
 
 //Irklang files for sound
 #include "irrKlang.h"
@@ -175,10 +176,22 @@ void GLViewFinal_project::updateWorld()
    if (this->lander != nullptr) {
 
        if (this->cam != nullptr) {
-           this->cam->setPosition(this->lander->getPosition() + Vector(20,0,0));
+           this->cam->setPosition(this->lander->getPosition() + Vector(40,0,0));
            this->cam->setCameraLookDirection(-this->lander->getLookDirection().x_axis());
        }
        
+   }
+
+   if (this->wayPt->isTriggered() == 1) {
+
+       if (this->count == 0) {
+
+            this->engine->play2D((ManagerEnvironmentConfiguration::getLMM() + "sounds/success-fanfare-trumpets-6185.mp3").c_str());
+            this->count++;
+       }
+
+       
+
    }
 
    
@@ -612,7 +625,7 @@ void Aftr::GLViewFinal_project::loadMap()
       //auto showDemoWindow_ImGuiPlot = [this]() { ImPlot::ShowDemoWindow(); };
       //auto show_moon_orbit_params   = [this]() { this->orbit_gui.draw(); };
       //auto show_gun_spawn           = [this]() { this->gun_gui.draw_gun(this->worldLst, this->getCameraPtrPtr() ); }; //draws the gun gui
-      auto run_game                   = [this]() {playing = this->running.startRunning();};
+      auto run_game                   = [this]() {playing = this->runs.startRunning();};
 
       this->gui->subscribe_drawImGuiWidget(
          [=,this]() //this is a lambda, the capture clause is in [], the input argument list is in (), and the body is in {}
@@ -664,15 +677,17 @@ void GLViewFinal_project::physxUpdate() {
     
 }
 
+
+
 void GLViewFinal_project::createFinal_projectWayPoints()
 {
    // Create a waypoint with a radius of 3, a frequency of 5 seconds, activated by GLView's camera, and is visible.
    WayPointParametersBase params(this);
-   params.frequency = 5000;
-   params.useCamera = true;
+   params.frequency = 60000;
+   params.activators.push_back(this->lander);
    params.visible = true;
-   WOWayPointSpherical* wayPt = WOWayPointSpherical::New( params, 3 );
-   wayPt->setPosition( Vector( 50, 0, 3 ) );
+   this->wayPt = WOWaypointLander::New( params, 3 ,this->playing);
+   wayPt->setPosition( Vector( 35, 30, 3 ) );
    worldLst->push_back( wayPt );
 }
 

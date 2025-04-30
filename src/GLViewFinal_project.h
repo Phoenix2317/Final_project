@@ -14,6 +14,7 @@
 #include <chrono>
 #include "WOPhysx.h"
 #include "TerrainGen.h"
+#include "WOWaypointLander.h"
 
  
 
@@ -59,6 +60,7 @@ public:
    virtual void onKeyUp( const SDL_KeyboardEvent& key ) override;
 
    void physxUpdate();
+  
 
    
 
@@ -66,20 +68,22 @@ protected:
    GLViewFinal_project( const std::vector< std::string >& args );
    virtual void onCreate();
 
+   WOWaypointLander* wayPt = nullptr;
+
    WOImGui* gui = nullptr; //The GUI which contains all ImGui widgets
    AftrImGui_MenuBar menu;      //The Menu bar at the top of the GUI window
    AftrImGui_WO_Editor wo_editor;//The WO Editor to mutate a selected WO
    AftrImGui_Final_project orbit_gui;
 
    AftrImGui_Final_project gun_gui; //Gui used to spawn the gun
-   AftrImGui_Final_project running;
+   AftrImGui_Final_project runs;
    WO* moon = nullptr;
    WO* gulfstream = nullptr;
 
   
    WOPhysx* lander = nullptr;
   
-
+   int count = 0;
    
    WOPhysx* cube = nullptr;
    WOPhysx* cube2 = nullptr;

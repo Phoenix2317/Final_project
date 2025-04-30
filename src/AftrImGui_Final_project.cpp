@@ -63,13 +63,8 @@ bool Aftr::AftrImGui_Final_project::running() {
         {
 
              this->isRunning = !this->isRunning;
-             if (isRunning) {
-
-                 this->isPlaying = !this->isPlaying;
-
-             }
-            
-
+             
+             this->isPlaying = !this->isPlaying;
         }
        
 
